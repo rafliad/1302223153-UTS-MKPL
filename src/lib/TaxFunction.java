@@ -20,28 +20,16 @@ public class TaxFunction {
     public static final int CHILD_LIMIT = 3;
 	
 	public static int calculateTax(int monthlySalary, int otherMonthlyIncome, int numberOfMonthWorking, int deductible, boolean isMarried, int numberOfChildren) {
-		
-		int tax = 0;
-		
-		if (numberOfMonthWorking > 12) {
-			System.err.println("More than 12 month working per year");
-		}
-		
-		if (numberOfChildren > CHILD_LIMIT) {
-			numberOfChildren = CHILD_LIMIT;
-		}
-		
-		if (isMarried) {
-			tax = (int) Math.round(TAX_RATE * (((monthlySalary + otherMonthlyIncome) * numberOfMonthWorking) - deductible - (BASE_EXEMPTION + SPOUSE_EXEMPTION + (numberOfChildren * CHILD_EXEMPTION))));
-		}else {
-			tax = (int) Math.round(TAX_RATE * (((monthlySalary + otherMonthlyIncome) * numberOfMonthWorking) - deductible - BASE_EXEMPTION));
-		}
-		
-		if (tax < 0) {
-			return 0;
-		}else {
-			return tax;
-		}
+		int children = Math.min(ctx.getChildren(), TaxRules.CHILD_LIMIT);
+        int exemption = BASE_EXEMPTION + (ctx.getStatus() == MaritalStatus.MARRIED ? TaxRules.SPOUSE_EXEMPTION : 0) + (children * TaxRules.CHILD_EXEMPTION);
+        int grossIncome = (ctx.getMonthlySalary() + ctx.getOtherMonthlyIncome()) * ctx.getMonthsWorked();
+        int taxableIncome = grossIncome - ctx.getDeductible() - exemption;
+
+        if (taxableIncome <= 0) {
+            return 0;
+        }
+
+        return (int) Math.round(TaxRules.TAX_RATE * taxableIncome);
 			 
 	}
 	
