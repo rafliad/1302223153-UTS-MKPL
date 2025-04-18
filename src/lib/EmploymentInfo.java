@@ -1,19 +1,9 @@
 public class EmploymentInfo {
-    private int yearJoined;
-	private int monthJoined;
-	private int dayJoined;
+    private LocalDate dateJoined;
 	private int monthWorkingInYear;
 
-    public int getYearJoined() {
-        return yearJoined;
-    }
-
-    public int getMonthJoined() {
-        return monthJoined;
-    }
-
-    public int getDayJoined() {
-        return dayJoined;
+    public LocalDate getDateJoined() {
+        return dateJoined;
     }
 
     public int getMonthWorkingInYear() {
@@ -21,16 +11,14 @@ public class EmploymentInfo {
     }
 
     public EmploymentInfo(int yearJoined, int monthJoined, int dayJoined) {
-        this.yearJoined = yearJoined;
-        this.monthJoined = monthJoined;
-        this.dayJoined = dayJoined;
+        this.dateJoined = LocalDate.of(yearJoined, monthJoined, dayJoined);
         this.monthWorkingInYear = calculateMonthsWorkedThisYear();
     }   
 
     public int calculateMonthsWorkedThisYear() {
         LocalDate now = LocalDate.now();
-        return now.getYear() == yearJoined
-            ? now.getMonthValue() - monthJoined
+        return now.getYear() == dateJoined.getYear()
+            ? now.getMonthValue() - dateJoined.getMonthValue()
             : 12;
     }
 }
